@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 function ImgSlider() {
 
+    // Setting to set the props of the sliders
     let settings = {
         dots: true,
         infinite: true,
@@ -16,6 +17,7 @@ function ImgSlider() {
     }
 
     return (
+        // Slick used to build sliders 
         <Carousel {...settings}>
             <Wrap>
                 <img src="/images/slider-badging.jpg" alt="movies" />

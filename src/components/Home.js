@@ -1,16 +1,28 @@
 import React from 'react'
 import styled from 'styled-components'
 import ImgSlider from './ImgSlider'
+import Movies from './Movies'
+import Viewers from './Viewers'
 
 function Home() {
     return (
         <Container>
+
+            {/* Image Sliders with movies descriptions  */}
             <ImgSlider />
+
+            {/* Various channels sections  */}
+            <Viewers />
+
+            {/* To Show various movies available */}
+            <Movies />
         </Container>
     )
 }
 
 export default Home
+
+// CSS using Styled Components
 
 const Container = styled.main`
     
@@ -19,6 +31,7 @@ const Container = styled.main`
     position: relative;
     overflow-x: hidden;
     
+    ${'' /* To set the background image one see in home section */}
     &:before {
         content: "";
         background: url("/images/home-background.png") center center / cover no-repeat fixed;
