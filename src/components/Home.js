@@ -1,20 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import ImgSlider from './ImgSlider'
 import Movies from './Movies'
 import Viewers from './Viewers'
+import db from "../firebase"
+import { collection, query, onSnapshot } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setMovies } from "../features/movie/movieSlice";
 
 function Home() {
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const q = query(collection(db, "Movies"));
+        onSnapshot(q, (querySnapshot) => {
+            let tempMovies = querySnapshot.docs.map((doc) => {
+                return { id: doc.id, ...doc.data() }
+            })
+            dispatch(setMovies(tempMovies));
+        })
+    }, [dispatch])
+
     return (
         <Container>
-
-            {/* Image Sliders with movies descriptions  */}
             <ImgSlider />
-
-            {/* Various channels sections  */}
             <Viewers />
-
-            {/* To Show various movies available */}
             <Movies />
         </Container>
     )
