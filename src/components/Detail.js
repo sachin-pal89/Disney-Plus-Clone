@@ -1,37 +1,62 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useParams } from "react-router-dom";
+import db from "../firebase"
+import { doc, getDoc } from "firebase/firestore";
 
 function Detail() {
+
+    const [currMovieDes, setCurrMovieDes] = useState({});
+    const { id } = useParams();
+
+    useEffect(() => {
+        // Grab the movie info from database
+        (async () => {
+            const docRef = doc(db, "Movies", id);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                setCurrMovieDes(docSnap.data());
+            } else {
+                // redirect to home page
+                console.log("No such document!");
+            }
+        })();
+        
+    }, [id])
+
     return (
         <Container>
-            <Background>
-                <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/4F39B7E16726ECF419DD7C49E011DD95099AA20A962B0B10AA1881A70661CE45/scale?width=1440&aspectRatio=1.78&format=jpeg" alt="background movie"/>
-            </Background>
-            <ImageTitle>
-                <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78" alt="movies title" />
-            </ImageTitle>
-            <Controls>
-                <PlayButton>
-                    <img src="/images/play-icon-black.png" alt="play"/>
-                    <span>PLAY</span>
-                </PlayButton>
-                <TrailerButton>
-                    <img src="/images/play-icon-white.png" alt="trailer"/>
-                    <span>TRAILER</span>
-                </TrailerButton>
-                <AddButton>
-                    <span>+</span>
-                </AddButton>
-                <GroupWatchButton>
-                    <img src="/images/group-icon.png" alt="group" />
-                </GroupWatchButton>
-            </Controls>
-            <SubTitle>
-                2018 - 7m - Family, Fantasy, Kids, Animation
-            </SubTitle>
-            <Description>
-                A Chinese mom who's sad when her grown son leaves home gets another chance at motherhood when one of her dumplings spring to life. But she finds that nothin stays and small forever.
-            </Description>
+            {
+                currMovieDes &&
+                <>
+                    <Background>
+                        <img src={currMovieDes.backgroundImg} alt={currMovieDes.title} />
+                    </Background>
+                    <Controls>
+                        <PlayButton>
+                            <img src="/images/play-icon-black.png" alt="play" />
+                            <span>PLAY</span>
+                        </PlayButton>
+                        <TrailerButton>
+                            <img src="/images/play-icon-white.png" alt="trailer" />
+                            <span>TRAILER</span>
+                        </TrailerButton>
+                        <AddButton>
+                            <span>+</span>
+                        </AddButton>
+                        <GroupWatchButton>
+                            <img src="/images/group-icon.png" alt="group" />
+                        </GroupWatchButton>
+                    </Controls>
+                    <SubTitle>
+                        {currMovieDes.subTitle}
+                    </SubTitle>
+                    <Description>
+                        {currMovieDes.description}
+                    </Description>
+                </>
+            }
         </Container>
     )
 }
@@ -61,24 +86,10 @@ const Background = styled.div`
     }
 `
 
-const ImageTitle = styled.div`
-    height: 30vh;
-    margin-top: 60px;
-    min-height: 170px;
-    width: 35vw;
-    min-width: 200px;
-
-    img{
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-`
-
 const Controls = styled.div`
-
     display: flex;
     align-items: center;
+    margin-top: 350px;
 
 `
 const PlayButton = styled.button`
